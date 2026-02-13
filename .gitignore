@@ -1,0 +1,15 @@
+# Object files
+*.o
+
+# Executables
+a.out
+*.exe
+
+# Build directory
+build/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
