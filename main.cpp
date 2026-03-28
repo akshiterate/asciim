@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <cstdlib>
+#include <ctime>
 #include <sys/ioctl.h>
 #include <iostream>
 
@@ -66,22 +67,30 @@ void editorRefreshScreen(){
 
 int main(){
     enableRawMode();
-
+    
     struct winsize w;
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&w);
     int rows = w.ws_row,cols =w.ws_col;
+    std::srand(static_cast<unsigned int>(std::time(nullptr))); 
     char grid[100][200];
-    for(int i=0;i<rows;i++){
-        for(int j=0;j<cols;j++){
-            grid[i][j] = 'a'+(rand()%26);
-        }
+    char stars[100][200];
+    char entities[5] = {'.','*','o','\'','+'};
+    for(int i=0;i<rows*cols*0.1;i++){
+        int a = rand()%rows;
+        int b = rand()%cols;
+        stars[a][b]=entities[rand()%5];
     }
-    while (1){//read 1 byte into c and do it till no bytes r left
+    while (1){
         processKey();
         editorRefreshScreen();
+        std::cout<<"\033[90m";
+        //write(STDOUT_FILENO,"\033[90m",4);
         for(int i=0;i<rows;i++){
             for(int j=0;j<cols;j++){
-                std::cout<<grid[i][j];
+                if(stars[i][j] != '\0'){
+                    std::cout<<"\033[1m"<<stars[i][j]<<"\033[0m";
+                }
+                else std::cout<<" ";
             }
             std::cout<<"\r\n";
         }
